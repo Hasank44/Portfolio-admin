@@ -1,221 +1,57 @@
-import React, { createContext, useContext } from 'react'
-import { useCallback, useEffect, useState } from "react";
-import axios from 'axios';
-import api from '../utils/sentAuthHeader';
-import { Message } from './MessageContext';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
+import api from "../utils/sentAuthHeader";
+import { Message } from "./MessageContext";
 
 export const Data = createContext();
 
 const DataProvider = ({ children }) => {
-  const { toast } = useContext(Message)
-  // import backend data
+  const { toast } = useContext(Message);
   const apiUrl = import.meta.env.VITE_API_URL;
 
-  // logo
-  //logo get
-  const [logo, setLogo] = useState({});
-useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/navbar`);
-    setLogo(res.data.result[0] || []);
-  } catch (error) {
-    toast.error(error.response.data.message);
-    };
+  const endpoints = {
+    logo: { url: "/navbar", auth: false, initial: {} },
+    home: { url: "/home", auth: false, initial: {} },
+    about: { url: "/about", auth: false, initial: {} },
+    qualification: { url: "/qualification", auth: false, initial: [] },
+    skill: { url: "/skill", auth: false, initial: [] },
+    project: { url: "/project", auth: false, initial: [] },
+    service: { url: "/service", auth: false, initial: [] },
+    achievement: { url: "/achievement", auth: false, initial: [] },
+    achieve: { url: "/achieve", auth: false, initial: [] },
+    contact: { url: "/contact", auth: true, initial: [] },
+    contactLocation: { url: "/contact/location", auth: false, initial: [] },
+    contactSocial: { url: "/contact/social", auth: false, initial: [] },
+    footer: { url: "/footer", auth: true, initial: [] },
   };
-  fetchData();
-}, [apiUrl, toast]);
-  
-  
 
-  // home
-  const [home, setHome] = useState({});
-useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/home`);
-    setHome(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message);
-    };
-  };
-  fetchData();
-}, [apiUrl, toast]);
+  const [data, setData] = useState(
+    Object.fromEntries(
+      Object.entries(endpoints).map(([key, cfg]) => [key, cfg.initial])
+    )
+  );
 
-  // about
-  const [about, setAbout] = useState({});
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/about`);
-    setAbout(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message);
-    };
+  const fetchData = async (key, cfg) => {
+    try {
+      const client = cfg.auth ? api : axios;
+      const res = await client.get(`${apiUrl}${cfg.url}`);
+      setData((prev) => ({ ...prev, [key]: res.data.result || cfg.initial }));
+    } catch (error) {
+      toast.error(error?.response?.data?.message || `Failed to load ${key}`);
+    }
   };
-  fetchData();
-}, [apiUrl, toast]);
 
-  // qualification
-  const [qualification, setQualification] = useState([]);
   useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/qualification`);
-    setQualification(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message);
-    };
-  };
-  fetchData();
-}, [apiUrl, toast]);
-  
-  // skill
-  const [skill, setSkill] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/skill`);
-    setSkill(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message);
-    };
-  };
-  fetchData();
-  }, [apiUrl, toast]);
+    Object.entries(endpoints).forEach(([key, cfg]) => {
+      fetchData(key, cfg);
+    });
+  }, [apiUrl]);
 
-  // projects
-  const [project, setProject] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/project`);
-    setProject(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message)
-  } 
-  };
-  fetchData();
-}, [apiUrl, toast]);
-
-  // service
-  const [service, setService] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/service`);
-    setService(res.data.result); 
-  } catch (error) {
-    toast.error(error.response.data.message)
-  }
-  };
-  fetchData();
-}, [apiUrl, toast]);
-
-  // achievement
-  const [achievement, setAchievement] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/achievement`);
-    setAchievement(res.data.result); 
-  } catch (error) {
-    toast.error(error.response.data.message)
-  }
-  };
-  fetchData();
-}, [apiUrl, toast]);
-
-  // achieve
-  const [achieve, setAchieve] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/achieve`);
-    setAchieve(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message)
-  } 
-  };
-  fetchData();
-}, [apiUrl, toast]);
-
-  // contacts
-  const [contact, setContact] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await api.get(`/contact`);
-    setContact(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message)
-  } 
-  };
-  fetchData();
-  }, [apiUrl, toast]);
-
-  // contactsLocation
-  const [contactLocation, setContactLocation] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/contact/location`);
-    setContactLocation(res.data.result);
-  } catch (error) {
-    toast.error(error.response.data.message)
-  } 
-  };
-  fetchData();
-  }, [apiUrl, toast]);
-  
-  // contactsSocial
-  const [contactSocial, setContactSocial] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/contact/social`);
-    setContactSocial(res.data.result); 
-  } catch (error) {
-    toast.error(error.response.data.message)
-  }
-  };
-  fetchData();
-}, [apiUrl, toast]);
-
-  // footer
-  const [footer, setFooter] = useState([]);
-  useEffect(() => {
-  const fetchData = async () => {
-  try {
-    const res = await api.get(`/footer`);
-    setFooter(res.data.result); 
-  } catch (error) {
-    toast.error(error.response.data.message)
-  }
-  };
-  fetchData();
-}, [apiUrl, toast]);
-  
-  const values = {
-    logo,
-    home,
-    about,
-    qualification,
-    skill,
-    project,
-    service,
-    achievement,
-    achieve,
-    contact,
-    contactLocation,
-    contactSocial,
-    footer
-  };
   return (
-    <Data.Provider value={values}>
+    <Data.Provider value={data}>
       {children}
     </Data.Provider>
-  )
+  );
 };
 
 export default DataProvider;

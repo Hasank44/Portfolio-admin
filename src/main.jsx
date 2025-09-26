@@ -18,6 +18,7 @@ import Contact from './components/pages/Contact/Contact.jsx';
 import ContactOther from './components/pages/Contact/ContactOther.jsx';
 import NewsLetter from './components/pages/Contact/NewsLetter.jsx';
 import Login from './components/auth/Login.jsx';
+import UpdateDataProvider from './context/UpdateDataProvider.jsx';
 
 const router = createBrowserRouter([
   {
@@ -48,8 +49,10 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <MessageProvider>
       <DataProvider>
-        <RouterProvider router={router}>
-        </RouterProvider>
+        <UpdateDataProvider>
+          <RouterProvider router={router}>
+          </RouterProvider>
+        </UpdateDataProvider>
       </DataProvider>
     </MessageProvider>
   </StrictMode>,

@@ -1,78 +1,76 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
-import ContactSocial from './ContactSocial';
 import { Update } from '../../../context/UpdateDataProvider';
 
-const ContactOther = () => {
-  const { contactLocation } = useContext(Data);
-  const { contactLocationUpdate } = useContext(Update);
+const ContactSocial = () => {
+    const { contactSocial } = useContext(Data);
+    const { contactSocialUpdate } = useContext(Update);
     
   const [selectedContact, setSelectedContact] = useState(null);
 
   const openModal = (item) => setSelectedContact(item);
-  const closeModal = () => setSelectedContact(null);
+    const closeModal = () => setSelectedContact(null);
+    
 
-  // update modal
-    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        title: "",
-        icon: "",
-        link: ""
-     });
-      
-    const [selectedData, setSelectedData] = useState(null);
-      
-    const openUpdateModal = (data) => {
-      setFormData({
-        title: data.title || "",
-        icon: data.icon || "",
-        link: data.link || ""
-      });
-      setSelectedData(data);
-      setIsUpdateOpen(true);
-    };
-      
-    const closeUpdateModal = () => {
-      setIsUpdateOpen(false);
-      setSelectedData(null);
-    };
-      
-    const handleChange = (e) => {
-    const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-      
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const id = selectedData._id
-        await contactLocationUpdate(id, formData);
-        closeUpdateModal();
-      } catch (error) {
-        console.error(error);
-      }
-  };
+      // update modal
+        const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+        const [formData, setFormData] = useState({
+            icon: "",
+            link: ""
+         });
+          
+        const [selectedData, setSelectedData] = useState(null);
+          
+        const openUpdateModal = (data) => {
+          setFormData({
+            icon: data.icon || "",
+            link: data.link || ""
+          });
+          setSelectedData(data);
+          setIsUpdateOpen(true);
+        };
+          
+        const closeUpdateModal = () => {
+          setIsUpdateOpen(false);
+          setSelectedData(null);
+        };
+          
+        const handleChange = (e) => {
+        const { name, value } = e.target;
+          setFormData((prev) => ({ ...prev, [name]: value }));
+        };
+          
+        const handleSubmit = async (e) => {
+          e.preventDefault();
+          try {
+            const id = selectedData._id
+            await contactSocialUpdate(id, formData);
+            closeUpdateModal();
+          } catch (error) {
+            console.error(error);
+          }
+      };
   return (
-    <div className="w-full px-1 py-5">
-
-        <div>
-        <h1 className='text-xl'>Contact Location</h1>
+    <div className="w-full px-1">
+    <div>
+      <h1 className='text-xl pt-3'>Contact Social</h1>
         <div className="flex flex-col w-full space-y-3">
-        {contactLocation.map((item) => (
+        {contactSocial.map((item, index) => (
           <div 
-            key={item._id} 
+            key={index} 
             className="bg-gray-700 rounded-lg px-3 py-2 w-full space-y-2 sm:space-y-0 sm:flex justify-between items-center"
           >
             <div className='flex items-center gap-2'>
-              <h2 className="text-white font-semibold">Title: {item.title}</h2>
+              <h2 className="text-white font-semibold">Icon: </h2>
+              <img src={item.icon} alt="" className='w-8 h-auto' />
             </div>
             <div className='space-x-3'>
               <button 
-                onClick={() => openModal(item)}
+                onClick={() => openModal(item)} 
                 className="px-1 py-1 bg-gray-500 rounded-md font-semibold text-sm"
               >
                 View
-              </button>
+              </button> 
               <button
                 onClick={()=> openUpdateModal(item)}
                 className="px-1 py-1 bg-amber-500 rounded-md font-semibold text-sm"
@@ -84,8 +82,7 @@ const ContactOther = () => {
         ))}
       </div>
     </div>
-          
-    <ContactSocial />
+           
       {/* Modal */}
       {selectedContact && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 w-full">
@@ -107,26 +104,16 @@ const ContactOther = () => {
             </button>
           </div>
         </div>
-      )}
+    )}
 
-      {/* Update Modal */}
+    {/* Update Modal */}
       {isUpdateOpen && (
         <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
           <div className="relative bg-gray-800 p-6 rounded-md w-full max-w-md">
             <h2 className="text-lg font-semibold text-white mb-4">
-              Update Contact Location
+              Update Contact Social
             </h2>
             <form onSubmit={handleSubmit} className="space-y-2">
-              <div>
-                <label className="block mb-1 text-gray-300">Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </div>
               <div>
                 <label className="block mb-1 text-gray-300">Icon</label>
                 <input
@@ -165,9 +152,10 @@ const ContactOther = () => {
             </form>
           </div>
         </div>
-      )}
+      )}  
+    
     </div>
   )
 }
 
-export default ContactOther;
+export default ContactSocial;

@@ -1,13 +1,58 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
+import { Update } from '../../../context/UpdateDataProvider';
 
 const Skill = () => {
   const { skill } = useContext(Data);
+  const { skillUpdate } = useContext(Update);
   const [selectedSkill, setSelectedSkill] = useState(null);
 
   const openModal = (item) => setSelectedSkill(item);
   const closeModal = () => setSelectedSkill(null);
 
+  // update modal
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const [formData, setFormData] = useState({
+      title: "",
+      icon: "",
+      type: ""
+    });
+  
+    const [selectedData, setSelectedData] = useState(null);
+  
+    const openUpdateModal = (data) => {
+      setFormData({
+        title: data.title || "",
+        icon: data.icon || "",
+        type: data.type || "",
+      });
+      setSelectedData(data);
+      setIsUpdateOpen(true);
+    };
+  
+    const closeUpdateModal = () => {
+      setIsUpdateOpen(false);
+      setSelectedData(null);
+    };
+  
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const id = selectedData._id;
+        await skillUpdate(id, formData);
+        closeUpdateModal();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+
+  // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   const totalPages = Math.ceil(skill.length / itemsPerPage);
@@ -36,6 +81,7 @@ const Skill = () => {
                 View
               </button> 
               <button 
+                onClick={()=> openUpdateModal(item)}
                 className="px-1 py-1 bg-amber-500 rounded-md font-semibold text-sm"
               >
                 Update
@@ -90,6 +136,71 @@ const Skill = () => {
             >
               ✕ Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Update Modal */}
+      {isUpdateOpen && (
+        <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+          <div className="relative bg-gray-800 p-6 rounded-md w-full max-w-md">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              Update Skill
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-2">
+              <div>
+                <label className="block mb-1 text-gray-300">Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  className="w-full p-2 rounded bg-gray-700 text-white"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-gray-300">Icon</label>
+                <input
+                  type="text"
+                  name="icon"
+                  value={formData.icon}
+                  onChange={handleChange}
+                  className="w-full p-2 rounded bg-gray-700 text-white"
+                />
+              </div>
+              <div>
+                <label htmlFor="type" className="block mb-1 text-gray-300">Type</label>
+                <select
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  className="w-full p-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select type</option>
+                  <option value="Frontend">Frontend</option>
+                  <option value="Backend">Backend</option>
+                  <option value="Languages">Languages</option>
+                  <option value="Tools">Tools</option>
+                </select>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={closeUpdateModal}
+                  className="px-4 py-2 bg-gray-500 rounded text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 rounded text-white"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
