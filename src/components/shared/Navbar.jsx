@@ -12,7 +12,6 @@ const Navbar = () => {
         setIsOpen(!isOpen);
     };
 
-
   return (
     <nav className='w-full h-auto items-center fixed top-0 z-50 b bg-gray-800'>
               <ToastContainer />

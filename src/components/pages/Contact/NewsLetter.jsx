@@ -1,12 +1,19 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
+import { Delete } from '../../../context/DeleteProvider';
 
 const NewsLetter = () => {
-    const { footer } = useContext(Data);
+  const { footer } = useContext(Data);
+  const { footerNewsDelete } = useContext(Delete);
   const [selectedFooter, setSelectedFooter] = useState(null);
 
   const openModal = (item) => setSelectedFooter(item);
   const closeModal = () => setSelectedFooter(null);
+
+  //Delete
+  const currentId = (id) => {
+    footerNewsDelete(id);
+  };
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,6 +42,7 @@ const NewsLetter = () => {
                 View
               </button>
               <button 
+                onClick={()=> currentId(item._id)}
                 className="px-1 py-1 bg-red-500 rounded-md font-semibold text-sm"
               >
                 Delete

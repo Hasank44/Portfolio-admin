@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
+import { Delete } from '../../../context/DeleteProvider';
 
 const Skill = () => {
   const { skill } = useContext(Data);
-  const { skillUpdate } = useContext(Update);
+  const { skillUpdate, skillToggle } = useContext(Update);
+  const { skillDelete } = useContext(Delete);
   const [selectedSkill, setSelectedSkill] = useState(null);
 
   const openModal = (item) => setSelectedSkill(item);
@@ -52,6 +54,11 @@ const Skill = () => {
     };
 
 
+  // delete
+  const currentId = (id) => {
+    skillDelete(id);
+  };
+  
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -72,6 +79,20 @@ const Skill = () => {
               <img src={item.icon} alt={item.title} className="w-8 h-auto " />
               <h2 className="text-white font-semibold">{item.title}</h2>
               <p className="text-gray-400 text-sm">{item.type}</p>
+                <button
+                  onClick={async () => {
+                  await skillToggle(item._id, !item.isEnable);
+                  }}
+                  className={`w-8 h-4 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                  item.isEnable ? "bg-green-500" : "bg-gray-600"
+                  }`}
+                >
+                <div
+                className={`w-3 h-3 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                item.isEnable ? "translate-x-3" : "translate-x-0"
+                }`}
+                ></div>
+              </button>
             </div>
             <div className='space-x-3'>
               <button 
@@ -87,6 +108,7 @@ const Skill = () => {
                 Update
               </button> 
               <button 
+                onClick={()=> currentId(item._id)}
                 className="px-1 py-1 bg-red-500 rounded-md font-semibold text-sm"
               >
                 Delete

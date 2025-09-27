@@ -19,6 +19,8 @@ import ContactOther from './components/pages/Contact/ContactOther.jsx';
 import NewsLetter from './components/pages/Contact/NewsLetter.jsx';
 import Login from './components/auth/Login.jsx';
 import UpdateDataProvider from './context/UpdateDataProvider.jsx';
+import DeleteProvider from './context/DeleteProvider.jsx';
+
 
 const router = createBrowserRouter([
   {
@@ -50,8 +52,10 @@ createRoot(document.getElementById('root')).render(
     <MessageProvider>
       <DataProvider>
         <UpdateDataProvider>
-          <RouterProvider router={router}>
-          </RouterProvider>
+          <DeleteProvider>
+            <RouterProvider router={router}>
+            </RouterProvider>
+          </DeleteProvider>
         </UpdateDataProvider>
       </DataProvider>
     </MessageProvider>

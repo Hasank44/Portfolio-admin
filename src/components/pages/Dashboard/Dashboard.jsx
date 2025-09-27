@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Link } from 'react-router-dom';
 import { Data } from "../../../context/DataProvider";
-
 const Dashboard = () => {
   const {
     home, about, qualification, skill, project, service, achievement, achieve, contact, footer
@@ -25,16 +24,16 @@ const Dashboard = () => {
   }, [contact]);
 
   // footer length
- const [todayNews, setTodayNews] = useState([]);
+  const [todayNews, setTodayNews] = useState([]);
   useEffect(() => {
     const today = new Date();
     const todayDate = today.toISOString().split("T")[0];
-
+    
     const filtered = footer.filter(item => {
       const itemDate = new Date(item.createdAt).toISOString().split("T")[0];
       return itemDate === todayDate;
     });
-
+    
     setTodayNews(filtered);
   }, [footer]);
   const newMessage = todayContact.length + todayNews.length;
@@ -53,7 +52,7 @@ const Dashboard = () => {
     { title: "New Messages", value: newMessage, link: '/contact'},
     { title: "Messages", value: totalContact, link: '/contact' },
   ];
-
+  
   return (
     <div className="px-1 py-5 w-full">
       <h1 className="text-2xl font-bold text-white mb-6">Dashboard</h1>

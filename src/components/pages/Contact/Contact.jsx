@@ -1,12 +1,19 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
+import { Delete } from '../../../context/DeleteProvider';
 
 const Contact = () => {
-    const { contact } = useContext(Data);
+  const { contact } = useContext(Data);
+  const { contactDelete } = useContext(Delete);
   const [selectedContact, setSelectedContact] = useState(null);
 
   const openModal = (item) => setSelectedContact(item);
   const closeModal = () => setSelectedContact(null);
+
+  // delete
+  const currentId = (id) => {
+    contactDelete(id);
+  };
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,6 +47,7 @@ const Contact = () => {
                 Update
               </button> 
               <button 
+                onClick={()=>currentId(item._id)}
                 className="px-1 py-1 bg-red-500 rounded-md font-semibold text-sm"
               >
                 Delete

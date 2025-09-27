@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
+import { Delete } from '../../../context/DeleteProvider';
 
 const Service = () => {
   const { service } = useContext(Data);
-  const { serviceUpdate } = useContext(Update);
+  const { serviceUpdate, serviceToggle } = useContext(Update);
+  const { serviceDelete } = useContext(Delete);
   const [selectedService, setSelectedService] = useState(null);
 
   const openModal = (item) => setSelectedService(item);
@@ -51,6 +53,12 @@ const Service = () => {
       }
     };
 
+  // // delete
+  const currentId = (id) => {
+    serviceDelete(id);
+  };
+  
+  
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -69,6 +77,20 @@ const Service = () => {
           >
             <div className='flex items-center gap-2'>
               <h2 className="text-white font-semibold">Title: {item.title}</h2>
+              <button
+              onClick={async () => {
+              await serviceToggle(item._id, !item.isEnable);
+              }}
+              className={`w-8 h-4 flex items-center rounded-full p-1 transition-colors duration-300 ${
+              item.isEnable ? "bg-green-500" : "bg-gray-600"
+              }`}
+              >
+              <div
+              className={`w-3 h-3 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+              item.isEnable ? "translate-x-3" : "translate-x-0"
+              }`}
+              ></div>
+              </button>
             </div>
             <div className='space-x-3'>
               <button 
@@ -84,6 +106,7 @@ const Service = () => {
                 Update
               </button> 
               <button 
+                onClick={()=> currentId(item._id)}
                 className="px-1 py-1 bg-red-500 rounded-md font-semibold text-sm"
               >
                 Delete
