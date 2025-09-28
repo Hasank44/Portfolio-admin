@@ -3,9 +3,11 @@ import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
 import { Delete } from '../../../context/DeleteProvider';
 import { Message } from '../../../context/MessageContext';
+import { Post } from '../../../context/PostDataProvider';
 
 const Service = () => {
   const { service, setService } = useContext(Data);
+  const { servicePost } = useContext(Post);
   const { serviceUpdate, serviceToggle } = useContext(Update);
   const { serviceDelete } = useContext(Delete);
   const { toast } = useContext(Message);
@@ -63,7 +65,6 @@ const Service = () => {
     }
   };
   
-  
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
@@ -78,7 +79,6 @@ const handleToggle = async (id, currentStatus) => {
       p._id === id ? { ...p, isEnable: !currentStatus } : p
     )
   );
-
   try {
     await serviceToggle(id, !currentStatus);
   } catch (error) {
@@ -89,11 +89,48 @@ const handleToggle = async (id, currentStatus) => {
       )
     );
   }
+  };
+  
+  // add new data
+  const [isOpenPostModal, setIsOpenPostModal] = useState(false);
+  const openPostModal = () => {
+    setIsOpenPostModal(true)
+  }
+  const closePostModal = () => {
+    setIsOpenPostModal(false);
+  };
+  const [newData, setNewData] = useState({
+    icon: "",
+    title: "",
+    description: ""
+  });
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setNewData((prev) => ({ ...prev, [name]: value }));
+  };
+
+const postNewData = (e) => {
+  e.preventDefault();
+if (newData.icon && newData.title && newData.description) {
+    servicePost(newData);
+    setNewData({
+      icon: "",
+      title: "",
+      description: ""
+    });
+    setTimeout(() => {
+      setIsOpenPostModal(false);
+    }, 1500);
+  } else {
+    servicePost(newData);
+  }
 };
+
   return (
     <div className="w-full px-1 py-5">
       <div className="w-full right-0 pb-3">
         <button
+          onClick={openPostModal}
           className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
         >
           Add New
@@ -232,6 +269,64 @@ const handleToggle = async (id, currentStatus) => {
                 <button
                   type="button"
                   onClick={closeUpdateModal}
+                  className="px-4 py-2 bg-gray-500 rounded text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 rounded text-white"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add New Data Modal */}
+      {isOpenPostModal && (
+        <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+          <div className="relative bg-gray-800 p-6 rounded-md w-full max-w-md">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              Add New Service
+            </h2>
+            <form onSubmit={postNewData} className="space-y-2">
+              <div>
+                <label className="block mb-1 text-gray-300">Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={newData.title}
+                  onChange={handleOnChange}
+                  className="w-full p-2 rounded bg-gray-700 text-white"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-gray-300">Icon</label>
+                <input
+                  type="text"
+                  name="icon"
+                  value={newData.icon}
+                  onChange={handleOnChange}
+                  className="w-full p-2 rounded bg-gray-700 text-white"
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-gray-300">Description</label>
+                <textarea
+                  name="description"
+                  rows={3}
+                  value={newData.description}
+                  onChange={handleOnChange}
+                  className="w-full p-2 rounded bg-gray-700 text-white"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={closePostModal}
                   className="px-4 py-2 bg-gray-500 rounded text-white"
                 >
                   Cancel

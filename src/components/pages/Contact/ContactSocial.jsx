@@ -52,13 +52,6 @@ const ContactSocial = () => {
       };
   return (
     <div className="w-full px-1">
-      <div className="w-full right-0">
-        <button
-          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
-        >
-          Add New
-        </button>
-      </div>
     <div>
       <h1 className='text-xl pt-3'>Contact Social</h1>
         <div className="flex flex-col w-full space-y-3">

@@ -83,7 +83,6 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       const id = logo[0]._id;
-      console.log(id)
       await logoUpdate(id, formData);
       closeUpdateModal();
     } catch (error) {

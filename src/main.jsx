@@ -21,6 +21,8 @@ import Login from './components/auth/Login.jsx';
 import UpdateDataProvider from './context/UpdateDataProvider.jsx';
 import DeleteProvider from './context/DeleteProvider.jsx';
 import PostDataProvider from './context/PostDataProvider.jsx';
+import PublicRoute from './utils/PublicRoute.jsx';
+import PrivateRoute from './utils/PrivateRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -28,20 +30,19 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <NotFound />,
     children: [
-      { index: true, path: '/', element: <Dashboard /> },
-      { path: '/home', element: <Home /> },
-      { path: '/about', element: <About /> },
-      { path: '/qualification', element: <Qualification /> },
-      { path: '/skill', element: <Skill /> },
-      { path: '/project', element: <Project /> },
-      { path: '/service', element: <Service /> },
-      { path: '/achievement', element: <Achievement /> },
-      { path: '/contact', element: <Contact /> },
-      { path: '/contact/other', element: <ContactOther /> },
-      { path: '/newsletter', element: <NewsLetter /> },
+      { index: true, path: '/', element: <PrivateRoute><Dashboard /></PrivateRoute> },
+      { path: '/home', element: <PrivateRoute><Home /></PrivateRoute> },
+      { path: '/about', element: <PrivateRoute><About /></PrivateRoute> },
+      { path: '/qualification', element: <PrivateRoute><Qualification /></PrivateRoute> },
+      { path: '/skill', element: <PrivateRoute><Skill /></PrivateRoute> },
+      { path: '/project', element: <PrivateRoute><Project /></PrivateRoute> },
+      { path: '/service', element: <PrivateRoute><Service /></PrivateRoute> },
+      { path: '/achievement', element: <PrivateRoute><Achievement /></PrivateRoute> },
+      { path: '/contact', element: <PrivateRoute><Contact /></PrivateRoute> },
+      { path: '/contact/other', element: <PrivateRoute><ContactOther /></PrivateRoute> },
+      { path: '/newsletter', element: <PrivateRoute><NewsLetter /></PrivateRoute> },
 
-
-      { path: '/admin/login', element: <Login /> },
+      { path: '/admin/login', element: <PublicRoute><Login /></PublicRoute> },
     ]
   }
 ]);

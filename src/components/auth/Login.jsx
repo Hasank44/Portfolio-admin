@@ -1,4 +1,4 @@
-import React, {  useContext, useEffect, useState } from 'react';
+import React, {  useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authImg from '../../assets/images/Authentication.svg';
 import axios from 'axios';
@@ -22,17 +22,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
-
     try {
       const url = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${url}/admin/login`, {
         email,
         password,
       });
-      console.log(response)
       toast.success(response.data.message);
       const token = response.data.token;
       localStorage.setItem('auth_token', token);
+      localStorage.setItem("currentHour", new Date().getHours());
       setFormData({
         email: '',
         password: '',

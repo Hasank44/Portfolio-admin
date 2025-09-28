@@ -14,10 +14,10 @@ const DeleteProvider = ({ children }) => {
       try {
         const response = await api.delete(`${apiUrl}/${endpoint}/${id}`);
         toast.success(response.data.message || "Delete Successfully!");
+        console.log(response)
         return response.data;
       } catch (error) {
         toast.error(error?.response?.data?.message || error.message);
-        throw error;
       }
     },
     [toast, apiUrl]

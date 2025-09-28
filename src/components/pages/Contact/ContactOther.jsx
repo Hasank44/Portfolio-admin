@@ -54,10 +54,15 @@ const ContactOther = () => {
         toast.error(error?.response?.data?.message || error.message);
       }
   };
+
+  const addNew = () => {
+    toast.warning('This Feathers Is Coming Soon')
+  }
   return (
     <div className="w-full px-1 py-5">
       <div className="w-full right-0">
         <button
+          onClick={addNew}
           className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
         >
           Add New
