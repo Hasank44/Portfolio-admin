@@ -20,7 +20,7 @@ import NewsLetter from './components/pages/Contact/NewsLetter.jsx';
 import Login from './components/auth/Login.jsx';
 import UpdateDataProvider from './context/UpdateDataProvider.jsx';
 import DeleteProvider from './context/DeleteProvider.jsx';
-
+import PostDataProvider from './context/PostDataProvider.jsx';
 
 const router = createBrowserRouter([
   {
@@ -46,17 +46,18 @@ const router = createBrowserRouter([
   }
 ]);
 
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <MessageProvider>
       <DataProvider>
-        <UpdateDataProvider>
-          <DeleteProvider>
-            <RouterProvider router={router}>
-            </RouterProvider>
-          </DeleteProvider>
-        </UpdateDataProvider>
+        <PostDataProvider>
+          <UpdateDataProvider>
+            <DeleteProvider>
+              <RouterProvider router={router}>
+              </RouterProvider>
+            </DeleteProvider>
+          </UpdateDataProvider>
+        </PostDataProvider>
       </DataProvider>
     </MessageProvider>
   </StrictMode>,

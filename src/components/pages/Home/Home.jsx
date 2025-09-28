@@ -1,19 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Data } from "../../../context/DataProvider";
 import { Update } from "../../../context/UpdateDataProvider";
+import { Message } from "../../../context/MessageContext";
 
 const Home = () => {
   const { home } = useContext(Data);
   const homeData = home[0] || {};
   const { homeUpdate } = useContext(Update);
+  const { toast } = useContext(Message);
 
   // image preview modal
   const [modalImage, setModalImage] = useState(null);
   const openImageModal = (img) => setModalImage(img);
   const closeImageModal = () => setModalImage(null);
 
-
-  
   // update modal
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [updateField, setUpdateField] = useState("");
@@ -57,7 +57,7 @@ const Home = () => {
       await homeUpdate(id, formData);
       closeUpdateModal();
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response?.data?.message || error.message);
     }
   };
 
@@ -72,6 +72,13 @@ const Home = () => {
 
   return (
     <div className="w-full px-1 py-5 items-center space-y-3">
+      <div className="w-full right-0">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
       <div className="flex bg-gray-700 px-3 py-2 rounded-md items-center justify-between">
         <div className="flex gap-2">
           <h1>Profile Image:</h1>

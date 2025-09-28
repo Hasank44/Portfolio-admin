@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider'
+import { Message } from '../../../context/MessageContext';
 
 const Qualification = () => {
   const { qualification } = useContext(Data);
   const { qualificationUpdate } = useContext(Update);
+  const { toast } = useContext(Message);
 
   const [selectedItem, setSelectedItem] = useState(null);
   const openModal = (item) => setSelectedItem(item);
@@ -49,12 +51,19 @@ const Qualification = () => {
       await qualificationUpdate(id, formData);
       closeUpdateModal();
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response?.data?.message || error.message);
     }
   };
 
   return (
     <div className="w-full px-1 py-5 space-y-3">
+      <div className="w-full right-0">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
       {qualification.map((item, index) => (
         <div 
           key={index} 

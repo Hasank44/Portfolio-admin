@@ -11,8 +11,11 @@ const Contact = () => {
   const closeModal = () => setSelectedContact(null);
 
   // delete
-  const currentId = (id) => {
-    contactDelete(id);
+  const currentId = (id, data ) => {
+    const confirmDelete = window.confirm(`Are You Sure Delete ${data}`);
+    if (confirmDelete) {
+      contactDelete(id);
+    }
   };
 
   // Pagination
@@ -24,7 +27,13 @@ const Contact = () => {
 
   return (
     <div className="w-full px-1 py-5">
-
+      <div className="w-full right-0 pb-3">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
       <div className="flex flex-col w-full space-y-3">
         {currentContact.map((item, index) => (
           <div 
@@ -47,7 +56,7 @@ const Contact = () => {
                 Update
               </button> 
               <button 
-                onClick={()=>currentId(item._id)}
+                onClick={()=>currentId(item._id, item.name)}
                 className="px-1 py-1 bg-red-500 rounded-md font-semibold text-sm"
               >
                 Delete

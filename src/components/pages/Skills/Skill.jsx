@@ -2,11 +2,13 @@ import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
 import { Delete } from '../../../context/DeleteProvider';
+import { Message } from '../../../context/MessageContext';
 
 const Skill = () => {
-  const { skill } = useContext(Data);
+  const { skill, setSkill } = useContext(Data);
   const { skillUpdate, skillToggle } = useContext(Update);
   const { skillDelete } = useContext(Delete);
+  const { toast } = useContext(Message);
   const [selectedSkill, setSelectedSkill] = useState(null);
 
   const openModal = (item) => setSelectedSkill(item);
@@ -49,14 +51,17 @@ const Skill = () => {
         await skillUpdate(id, formData);
         closeUpdateModal();
       } catch (error) {
-        console.error(error);
+        toast.error(error?.response?.data?.message || error.message);
       }
     };
 
 
   // delete
-  const currentId = (id) => {
-    skillDelete(id);
+  const currentId = (id, data ) => {
+    const confirmDelete = window.confirm(`Are You Sure Delete ${data}`);
+    if (confirmDelete) {
+      skillDelete(id);
+    }
   };
   
   // pagination
@@ -66,9 +71,36 @@ const Skill = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentSkills = skill.slice(startIndex, startIndex + itemsPerPage);
 
+
+  // enable toggle
+const handleToggle = async (id, currentStatus) => {
+  setSkill(prev =>
+    prev.map(p =>
+      p._id === id ? { ...p, isEnable: !currentStatus } : p
+    )
+  );
+
+  try {
+    await skillToggle(id, !currentStatus);
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    setSkill(prev =>
+      prev.map(p =>
+        p._id === id ? { ...p, isEnable: currentStatus } : p
+      )
+    );
+  };
+};
+
   return (
     <div className="w-full px-1 py-5">
-
+      <div className="w-full right-0 pb-3">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
       <div className="flex flex-col w-full space-y-3">
         {currentSkills.map((item, index) => (
           <div 
@@ -79,20 +111,18 @@ const Skill = () => {
               <img src={item.icon} alt={item.title} className="w-8 h-auto " />
               <h2 className="text-white font-semibold">{item.title}</h2>
               <p className="text-gray-400 text-sm">{item.type}</p>
-                <button
-                  onClick={async () => {
-                  await skillToggle(item._id, !item.isEnable);
-                  }}
-                  className={`w-8 h-4 flex items-center rounded-full p-1 transition-colors duration-300 ${
-                  item.isEnable ? "bg-green-500" : "bg-gray-600"
-                  }`}
+              <button
+              onClick={() => handleToggle(item._id, item.isEnable)}
+              className={`w-8 h-4 flex items-center rounded-full p-1 transition-colors duration-300 ${
+              item.isEnable ? "bg-green-500" : "bg-gray-600"
+              }`}
                 >
-                <div
-                className={`w-3 h-3 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                item.isEnable ? "translate-x-3" : "translate-x-0"
-                }`}
-                ></div>
-              </button>
+              <div
+              className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+              item.isEnable ? "translate-x-3" : "translate-x-0"
+              }`}
+            ></div>
+            </button>
             </div>
             <div className='space-x-3'>
               <button 
@@ -108,7 +138,7 @@ const Skill = () => {
                 Update
               </button> 
               <button 
-                onClick={()=> currentId(item._id)}
+                onClick={()=> currentId(item._id, item.title)}
                 className="px-1 py-1 bg-red-500 rounded-md font-semibold text-sm"
               >
                 Delete

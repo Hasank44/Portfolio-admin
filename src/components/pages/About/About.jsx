@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
+import { Message } from '../../../context/MessageContext';
 
 const About = () => {
   const { about } = useContext(Data);
+  const { toast } = useContext(Message);
   const aboutData = about[0] || [];
   const [modalContent, setModalContent] = useState(null);
 
@@ -52,7 +54,7 @@ const About = () => {
         await aboutUpdate(id, formData);
         closeUpdateModal();
       } catch (error) {
-        console.error(error);
+        toast.error(error?.response?.data?.message || error.message);
       }
     };
   
@@ -66,6 +68,13 @@ const About = () => {
 
   return (
     <div className="w-full px-1 py-5 items-center space-y-3">
+      <div className="w-full right-0">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
       <div className="flex bg-gray-700 px-3 py-2 rounded-md items-center justify-between">
         <div className='flex gap-2'>
           <h1>Profile Image:</h1>

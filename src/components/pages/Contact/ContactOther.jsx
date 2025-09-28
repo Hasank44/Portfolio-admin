@@ -2,10 +2,12 @@ import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import ContactSocial from './ContactSocial';
 import { Update } from '../../../context/UpdateDataProvider';
+import { Message } from '../../../context/MessageContext';
 
 const ContactOther = () => {
   const { contactLocation } = useContext(Data);
   const { contactLocationUpdate } = useContext(Update);
+  const { toast } = useContext(Message);
     
   const [selectedContact, setSelectedContact] = useState(null);
 
@@ -49,12 +51,18 @@ const ContactOther = () => {
         await contactLocationUpdate(id, formData);
         closeUpdateModal();
       } catch (error) {
-        console.error(error);
+        toast.error(error?.response?.data?.message || error.message);
       }
   };
   return (
     <div className="w-full px-1 py-5">
-
+      <div className="w-full right-0">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
         <div>
         <h1 className='text-xl'>Contact Location</h1>
         <div className="flex flex-col w-full space-y-3">

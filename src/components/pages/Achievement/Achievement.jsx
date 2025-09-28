@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
+import { Message } from '../../../context/MessageContext';
 
 const Achievement = () => {
   const { achievement, achieve } = useContext(Data);
   const { achievementUpdate } = useContext(Update);
+  const { toast } = useContext(Message);
   const stats = achieve;
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -12,46 +14,53 @@ const Achievement = () => {
   const closeModal = () => setSelectedItem(null);
 
   // update modal
-      const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        title: "",
-        description: ""
-      });
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+  const [formData, setFormData] = useState({
+      title: "",
+      description: ""
+  });
     
-      const [selectedData, setSelectedData] = useState(null);
+  const [selectedData, setSelectedData] = useState(null);
     
-      const openUpdateModal = (data) => {
-        setFormData({
-          title: data.title || "",
-          description: data.description || ""
-        });
-        setSelectedData(data);
-        setIsUpdateOpen(true);
-      };
+  const openUpdateModal = (data) => {
+    setFormData({
+      title: data.title || "",
+      description: data.description || ""
+    });
+    setSelectedData(data);
+    setIsUpdateOpen(true);
+  };
     
-      const closeUpdateModal = () => {
-        setIsUpdateOpen(false);
-        setSelectedData(null);
-      };
+  const closeUpdateModal = () => {
+    setIsUpdateOpen(false);
+    setSelectedData(null);
+  };
     
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-      };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
     
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-          const id = selectedData._id
-          await achievementUpdate(id, formData);
-          closeUpdateModal();
-        } catch (error) {
-          console.error(error);
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const id = selectedData._id
+      await achievementUpdate(id, formData);
+      closeUpdateModal();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
+    }
   };
   
   return (
     <div className="w-full px-1 py-5 space-y-3">
+      <div className="w-full right-0">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
       {achievement.map((item, index) => (
         <div 
           key={index}

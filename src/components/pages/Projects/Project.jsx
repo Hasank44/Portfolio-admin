@@ -2,11 +2,13 @@ import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
 import { Delete } from '../../../context/DeleteProvider';
+import { Message } from '../../../context/MessageContext';
 
 const Project = () => {
-  const { project } = useContext(Data);
+  const { project, setProject } = useContext(Data);
   const { projectUpdate, projectToggle } = useContext(Update);
   const { projectDelete } = useContext(Delete);
+  const { toast } = useContext(Message);
   const [selectedProject, setSelectedProject] = useState(null);
 
   const openModal = (item) => setSelectedProject(item);
@@ -53,13 +55,16 @@ const Project = () => {
       await projectUpdate(id, formData);
       closeUpdateModal();
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response?.data?.message || error.message);
     }
   };
 
   // delete
-  const currentId = (id) => {
-    projectDelete(id);
+  const currentId = (id, data ) => {
+    const confirmDelete = window.confirm(`Are You Sure Delete ${data}`);
+    if (confirmDelete) {
+      projectDelete(id);
+    }
   };
 
   // Pagination
@@ -69,9 +74,35 @@ const Project = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentProjects = project.slice(startIndex, startIndex + itemsPerPage);
 
+  // enable toggle
+const handleToggle = async (id, currentStatus) => {
+  setProject(prev =>
+    prev.map(p =>
+      p._id === id ? { ...p, isEnable: !currentStatus } : p
+    )
+  );
+
+  try {
+    await projectToggle(id, !currentStatus);
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+    setProject(prev =>
+      prev.map(p =>
+        p._id === id ? { ...p, isEnable: currentStatus } : p
+      )
+    );
+  }
+};
+
   return (
     <div className="w-full px-1 py-5">
-
+      <div className="w-full right-0 pb-3">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
       <div className="flex flex-col w-full space-y-3">
         {currentProjects.map((item, index) => (
           <div 
@@ -81,19 +112,17 @@ const Project = () => {
             <div className='flex items-center gap-2'>
               <h2 className="text-white font-semibold">Title: {item.title}</h2>
               <button
-              onClick={async () => {
-              await projectToggle(item._id, !item.isEnable);
-              }}
+              onClick={() => handleToggle(item._id, item.isEnable)}
               className={`w-8 h-4 flex items-center rounded-full p-1 transition-colors duration-300 ${
               item.isEnable ? "bg-green-500" : "bg-gray-600"
               }`}
-            >
-            <div
-            className={`w-3 h-3 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-            item.isEnable ? "translate-x-3" : "translate-x-0"
-            }`}
+                >
+              <div
+              className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+              item.isEnable ? "translate-x-3" : "translate-x-0"
+              }`}
             ></div>
-          </button>
+            </button>
           </div>
             
             <div className='space-x-3'>
@@ -110,7 +139,7 @@ const Project = () => {
                 Update
               </button> 
               <button 
-                onClick={()=> currentId(item._id)}
+                onClick={()=> currentId(item._id, item.title)}
                 className="px-1 py-1 bg-red-500 rounded-md font-semibold text-sm"
               >
                 Delete

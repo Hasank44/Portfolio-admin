@@ -1,17 +1,17 @@
 import React, { useContext, useState } from 'react'
 import { Data } from '../../../context/DataProvider'
 import { Update } from '../../../context/UpdateDataProvider';
+import { Message } from '../../../context/MessageContext';
 
 const ContactSocial = () => {
-    const { contactSocial } = useContext(Data);
-    const { contactSocialUpdate } = useContext(Update);
+  const { contactSocial } = useContext(Data);
+  const { contactSocialUpdate } = useContext(Update);
+  const { toast } = useContext(Message);
     
   const [selectedContact, setSelectedContact] = useState(null);
 
   const openModal = (item) => setSelectedContact(item);
     const closeModal = () => setSelectedContact(null);
-    
-
       // update modal
         const [isUpdateOpen, setIsUpdateOpen] = useState(false);
         const [formData, setFormData] = useState({
@@ -47,11 +47,18 @@ const ContactSocial = () => {
             await contactSocialUpdate(id, formData);
             closeUpdateModal();
           } catch (error) {
-            console.error(error);
+            toast.error(error?.response?.data?.message || error.message);
           }
       };
   return (
     <div className="w-full px-1">
+      <div className="w-full right-0">
+        <button
+          className="px-2 py-1 bg-amber-500 rounded-md font-semibold text-sm justify-end"
+        >
+          Add New
+        </button>
+      </div>
     <div>
       <h1 className='text-xl pt-3'>Contact Social</h1>
         <div className="flex flex-col w-full space-y-3">

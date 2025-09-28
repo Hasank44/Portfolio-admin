@@ -9,46 +9,173 @@ const DataProvider = ({ children }) => {
   const { toast } = useContext(Message);
   const apiUrl = import.meta.env.VITE_API_URL;
 
-  const endpoints = {
-    logo: { url: "/navbar", auth: false, initial: {} },
-    home: { url: "/home", auth: false, initial: {} },
-    about: { url: "/about", auth: false, initial: {} },
-    qualification: { url: "/qualification", auth: false, initial: [] },
-    skill: { url: "/skill", auth: true, initial: [] },
-    project: { url: "/project", auth: true, initial: [] },
-    service: { url: "/service", auth: true, initial: [] },
-    achievement: { url: "/achievement", auth: false, initial: [] },
-    achieve: { url: "/achieve", auth: false, initial: [] },
-    contact: { url: "/contact", auth: true, initial: [] },
-    contactLocation: { url: "/contact/location", auth: false, initial: [] },
-    contactSocial: { url: "/contact/social", auth: false, initial: [] },
-    footer: { url: "/footer", auth: true, initial: [] },
+  
+  const [logo, setLogo] = useState({});
+  const [home, setHome] = useState({});
+  const [about, setAbout] = useState({});
+  const [qualification, setQualification] = useState([]);
+  const [skill, setSkill] = useState([]);
+  const [project, setProject] = useState([]);
+  const [service, setService] = useState([]);
+  const [achievement, setAchievement] = useState([]);
+  const [achieve, setAchieve] = useState([]);
+  const [contact, setContact] = useState([]);
+  const [contactLocation, setContactLocation] = useState([]);
+  const [contactSocial, setContactSocial] = useState([]);
+  const [footer, setFooter] = useState([]);
+
+
+  const fetchLogo = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/navbar`);
+      setLogo(res.data.result || {});
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load logo");
+    }
   };
 
-  const [data, setData] = useState(
-    Object.fromEntries(
-      Object.entries(endpoints).map(([key, cfg]) => [key, cfg.initial])
-    )
-  );
-
-  const fetchData = async (key, cfg) => {
+  const fetchHome = async () => {
     try {
-      const client = cfg.auth ? api : axios;
-      const res = await client.get(`${apiUrl}${cfg.url}`);
-      setData((prev) => ({ ...prev, [key]: res.data.result || cfg.initial }));
+      const res = await axios.get(`${apiUrl}/home`);
+      setHome(res.data.result || {});
     } catch (error) {
-      toast.error(error?.response?.data?.message || `Failed to load ${key}`);
+      toast.error(error?.response?.data?.message || "Failed to load home");
+    }
+  };
+
+  const fetchAbout = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/about`);
+      setAbout(res.data.result || {});
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load about");
+    }
+  };
+
+  const fetchQualification = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/qualification`);
+      setQualification(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load qualification");
+    }
+  };
+
+  const fetchSkill = async () => {
+    try {
+      const res = await api.get(`${apiUrl}/skill`);
+      setSkill(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load skill");
+    }
+  };
+
+  const fetchProject = async () => {
+    try {
+      const res = await api.get(`${apiUrl}/project`);
+      setProject(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load project");
+    }
+  };
+
+  const fetchService = async () => {
+    try {
+      const res = await api.get(`${apiUrl}/service`);
+      setService(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load service");
+    }
+  };
+
+  const fetchAchievement = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/achievement`);
+      setAchievement(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load achievement");
+    }
+  };
+
+  const fetchAchieve = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/achieve`);
+      setAchieve(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load achieve");
+    }
+  };
+
+  const fetchContact = async () => {
+    try {
+      const res = await api.get(`${apiUrl}/contact`);
+      setContact(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load contact");
+    }
+  };
+
+  const fetchContactLocation = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/contact/location`);
+      setContactLocation(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load contact location");
+    }
+  };
+
+  const fetchContactSocial = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/contact/social`);
+      setContactSocial(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load contact social");
+    }
+  };
+
+  const fetchFooter = async () => {
+    try {
+      const res = await api.get(`${apiUrl}/footer`);
+      setFooter(res.data.result || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to load footer");
     }
   };
 
   useEffect(() => {
-    Object.entries(endpoints).forEach(([key, cfg]) => {
-      fetchData(key, cfg);
-    });
+    fetchLogo();
+    fetchHome();
+    fetchAbout();
+    fetchQualification();
+    fetchSkill();
+    fetchProject();
+    fetchService();
+    fetchAchievement();
+    fetchAchieve();
+    fetchContact();
+    fetchContactLocation();
+    fetchContactSocial();
+    fetchFooter();
   }, [apiUrl]);
 
   return (
-    <Data.Provider value={data}>
+    <Data.Provider
+      value={{
+        logo, setLogo,
+        home, setHome,
+        about, setAbout,
+        qualification, setQualification,
+        skill, setSkill,
+        project, setProject,
+        service, setService,
+        achievement, setAchievement,
+        achieve, setAchieve,
+        contact, setContact,
+        contactLocation, setContactLocation,
+        contactSocial, setContactSocial,
+        footer, setFooter,
+      }}
+    >
       {children}
     </Data.Provider>
   );
